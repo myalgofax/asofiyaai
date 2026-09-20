@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "Lingua Robot",
+    "slug": "lingua-robot",
+    "scheme": "linguarobot",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1a4d3e"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow Lingua Robot to record your voice for language practice."
+        }
+      ],
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Allow Lingua Robot to hear you for hands-free language practice.",
+          "speechRecognitionPermission": "Allow Lingua Robot to transcribe your speech for language practice."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Lingua Robot to use your camera for live language practice."
+        }
+      ],
+      "expo-asset",
+      "expo-font"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.linguarobot",
+      "infoPlist": {
+        "NSSpeechRecognitionUsageDescription": "Allow Lingua Robot to transcribe speech for language practice."
+      }
+    },
+    "android": {
+      "package": "com.example.linguarobot",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1a4d3e"
+      },
+      "permissions": [
+        "RECORD_AUDIO"
+      ]
+    },
+    "userInterfaceStyle": "light"
+  }
+}

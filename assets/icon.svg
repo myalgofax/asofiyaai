@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a4d3e"/>
+      <stop offset="100%" stop-color="#2d7a62"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7fffd4" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#7fffd4" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded rect -->
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <!-- Subtle top sheen -->
+  <rect width="1024" height="520" rx="220" fill="url(#glow)"/>
+
+  <!-- Outer speech bubble -->
+  <rect x="148" y="200" width="580" height="380" rx="80" fill="#ffffff" fill-opacity="0.13"/>
+  <!-- Inner speech bubble fill -->
+  <rect x="148" y="200" width="580" height="380" rx="80" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="6"/>
+  <!-- Bubble tail -->
+  <path d="M260 580 L220 660 L340 600 Z" fill="#ffffff" fill-opacity="0.13"/>
+  <path d="M260 580 L220 660 L340 600 Z" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="6" stroke-linejoin="round"/>
+
+  <!-- Sound wave lines inside bubble (representing voice/language) -->
+  <rect x="220" y="355" width="60" height="70" rx="30" fill="#7fffd4" fill-opacity="0.9"/>
+  <rect x="310" y="310" width="60" height="160" rx="30" fill="#7fffd4"/>
+  <rect x="400" y="270" width="60" height="240" rx="30" fill="#c8f5e8"/>
+  <rect x="490" y="310" width="60" height="160" rx="30" fill="#7fffd4"/>
+  <rect x="580" y="355" width="60" height="70" rx="30" fill="#7fffd4" fill-opacity="0.9"/>
+
+  <!-- Sofiya dot / sparkle accent top-right of bubble -->
+  <circle cx="680" cy="240" r="28" fill="#c58e52"/>
+  <circle cx="680" cy="240" r="16" fill="#f0b96a"/>
+
+  <!-- Bottom wordmark area -->
+  <text x="512" y="790" font-family="Georgia, serif" font-size="88" font-weight="700"
+        fill="#ffffff" fill-opacity="0.92" text-anchor="middle" letter-spacing="-2">sofiya</text>
+  <text x="512" y="860" font-family="Arial, sans-serif" font-size="38" font-weight="400"
+        fill="#7fffd4" fill-opacity="0.75" text-anchor="middle" letter-spacing="6">LANGUAGE</text>
+</svg>
