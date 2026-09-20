@@ -4,6 +4,7 @@ import { View, Text, TextInput, Pressable, FlatList, StyleSheet, Alert, Keyboard
 import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { CameraPanel } from '@/components/CameraPanel';
 function getNativeSR() {
   try { return require('expo-speech-recognition').ExpoSpeechRecognitionModule; } catch { return null; }
 }
@@ -34,6 +35,9 @@ export default function Chat() {
   const [listening, setListening] = useState(false);
   const [partial, setPartial] = useState('');
   const [voiceError, setVoiceError] = useState('');
+  const [cameraOn, setCameraOn] = useState(false);
+  const cameraStreamRef = useRef<MediaStream | null>(null);
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([{ id: 'hello', role: 'assistant', text: `Hi, I’m Sofiya! Let’s practice ${language.name} together. Tell me about your day, or choose a conversation starter below.` }]);
   const messagesListRef = useRef<FlatList<ChatMessage> | null>(null);
   const messagesRef = useRef(messages);
@@ -55,6 +59,24 @@ export default function Chat() {
   useEffect(() => {
     scrollMessagesToEnd();
   }, [messages.length, scrollMessagesToEnd]);
+
+  async function toggleCamera() {
+    if (cameraOn) {
+      cameraStreamRef.current?.getTracks().forEach(t => t.stop());
+      cameraStreamRef.current = null;
+      setCameraStream(null);
+      setCameraOn(false);
+    } else {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        cameraStreamRef.current = stream;
+        setCameraStream(stream);
+        setCameraOn(true);
+      } catch (e) {
+        Alert.alert('Camera unavailable', e instanceof Error ? e.message : 'Could not access camera');
+      }
+    }
+  }
 
   const webRecogRef = useRef<any>(null);
   const scheduleNextListenRef = useRef<() => void>(() => {});
@@ -116,7 +138,7 @@ export default function Chat() {
     try {
       if (useWebSpeech()) {
         if (navigator.mediaDevices?.getUserMedia) {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
           stream.getTracks().forEach(t => t.stop());
         }
         startWebSpeech(language.locale);
@@ -285,17 +307,27 @@ export default function Chat() {
     try { webRecogRef.current?.abort(); webRecogRef.current = null; } catch { }
     try { getNativeSR()?.abort(); } catch { }
     stopSpeaking();
+    cameraStreamRef.current?.getTracks().forEach(t => t.stop());
   }, []);
+
+  const isWeb = Platform.OS === 'web';
 
   return (
     <SafeAreaView style={s.page}>
-      <View style={s.shell}>
+      <View style={s.outerRow}>
+        {isWeb && cameraOn && <CameraPanel stream={cameraStream} />}
+        <View style={s.shell}>
         <View style={s.top}>
           <View style={s.brandMark}><Ionicons name="sparkles" size={22} color="#fff" /></View>
           <View style={{ flex: 1 }}>
             <Text style={s.brand}>sofiya<Text style={{ color: '#c58e52' }}>.</Text></Text>
             <Text style={s.caption}>Your everyday language companion</Text>
           </View>
+          {isWeb && (
+            <Pressable accessibilityRole="button" accessibilityLabel={cameraOn ? 'Turn off camera' : 'Turn on camera'} onPress={toggleCamera} style={[s.gear, cameraOn && { backgroundColor: '#2f705b' }]}>
+              <Ionicons name={cameraOn ? 'videocam' : 'videocam-outline'} size={22} color={cameraOn ? '#fff' : '#405b53'} />
+            </Pressable>
+          )}
           <Pressable accessibilityRole="button" accessibilityLabel="Voice settings" onPress={() => router.push('/voice-settings')} style={s.gear}>
             <Ionicons name="options-outline" size={22} color="#405b53" />
           </Pressable>
@@ -360,12 +392,13 @@ export default function Chat() {
               <Pressable accessibilityRole="button" accessibilityLabel={voiceMode ? 'Stop voice mode' : text.trim() ? 'Send message' : 'Start voice mode'}
                 style={({ pressed }) => [s.action, voiceMode && s.micOn, (pressed || (busy && !voiceMode)) && { opacity: 0.55 }]}
                 onPress={voiceMode || !text.trim() ? toggleVoice : () => submit(text)} disabled={busy && !voiceMode}>
-                <Ionicons name={voiceMode ? 'stop' : text.trim() ? 'arrow-up' : 'mic-outline'} size={22} color="#fff" />
+                <Ionicons name={voiceMode ? 'stop' : text.trim() ? 'send' : 'mic'} size={20} color="#fff" />
               </Pressable>
             </View>
             <Text style={s.composerHint}>No perfect sentences needed. Just be yourself.</Text>
           </View>
         </KeyboardAvoidingView>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -373,7 +406,8 @@ export default function Chat() {
 
 const s = StyleSheet.create({
   page: { flex: 1, minHeight: 0, backgroundColor: '#eaf0eb' },
-  shell: { flex: 1, minHeight: 0, width: '100%', maxWidth: 960, alignSelf: 'center', backgroundColor: '#fafbf8', borderLeftWidth: 1, borderRightWidth: 1, borderColor: '#e0e8e0' },
+  outerRow: { flex: 1, minHeight: 0, flexDirection: 'row', width: '100%', maxWidth: 1280, alignSelf: 'center' as any },
+  shell: { flex: 1, minHeight: 0, backgroundColor: '#fafbf8', borderLeftWidth: 1, borderRightWidth: 1, borderColor: '#e0e8e0' },
   top: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 16, gap: 12, borderBottomWidth: 1, borderColor: '#e7ece5', backgroundColor: '#fffefa' },
   brandMark: { width: 42, height: 42, borderRadius: 14, backgroundColor: '#256b59', alignItems: 'center', justifyContent: 'center' },
   brand: { fontSize: 27, lineHeight: 31, fontWeight: '800', letterSpacing: -1, color: '#24473d' },
