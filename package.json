@@ -10,6 +10,7 @@
     "ios": "expo run:ios",
     "typecheck": "tsc --noEmit",
     "build": "expo export --platform web",
+    "deploy": "npm run build && npx gh-pages -d dist",
     "build:android": "expo export --platform android --output-dir dist-android",
     "build:apk": "node scripts/android.cjs --apk",
     "build:apk-release": "node scripts/android.cjs --release"
@@ -43,6 +44,7 @@
     "@types/react": "~19.1.10",
     "babel-preset-expo": "~54.0.12",
     "concurrently": "^9.2.0",
+    "gh-pages": "^6.3.0",
     "sharp": "^0.35.4",
     "typescript": "~5.9.2"
   }

@@ -33,6 +33,11 @@
       "expo-asset",
       "expo-font"
     ],
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "publicPath": "/asofiyaai/"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.example.linguarobot",
